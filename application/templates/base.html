@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>新浪微博首页时间线RSS</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+</head>
+<body>
+    {% for message in flash_messages %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+    {% block main %}
+    {% endblock %}
+</body>
+</html>

@@ -20,6 +20,7 @@ config = dict((name, os.environ[name]) for name in (
 ))
 
 app = webapp2.WSGIApplication([
-    ("/", ""),
+    webapp2.Route("/", handler="application.views.login.Login", name="login"),
+    webapp2.Route("/rss/<sid>", handler="application.views.rss.RSS", name="rss"),
 ], config=config, debug=True)
 
