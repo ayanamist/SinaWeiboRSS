@@ -14,8 +14,6 @@ from application.utils import monkey_patch
 monkey_patch.patch_all()
 
 config = dict((name, os.environ[name]) for name in (
-    "SITE_NAME",
-    "SESSION_COOKIE_PATH",
     "CONSUMER_KEY",
     "CONSUMER_SECRET",
     "SECRET_KEY",
