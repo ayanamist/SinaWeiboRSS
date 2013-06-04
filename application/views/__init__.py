@@ -6,6 +6,8 @@ import webapp2
 
 from webapp2_extras import jinja2
 
+from application import utils
+
 
 class BaseHandler(webapp2.RequestHandler):
     @webapp2.cached_property
@@ -16,6 +18,10 @@ class BaseHandler(webapp2.RequestHandler):
         default_config["globals"] = {
             "app": self.app,
             "uri_for": webapp2.uri_for,
+        }
+        default_config["filters"] = {
+            "mid2url": utils.mid2url,
+            "rfc822": utils.rfc822,
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
         return jinja2.get_jinja2(app=self.app)

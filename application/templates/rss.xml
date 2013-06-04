@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <atom:link rel="hub" href="http://pubsubhubbub.appspot.com"/>
+        <title>新浪微博首页时间线</title>
+        <description>导出新浪微博首页时间线为RSS</description>
+        <link>http://weibo.com/</link>
+        {% for result in results %}
+            <item>
+                <title>@{{ result.user.screen_name }}: {{ result.rss_title|e }}</title>
+                <description><![CDATA[
+                    <div>
+                        {{ result.user.screen_name }} ({{ result.user.name }}):
+                        {{ result.text|safe }}
+                    </div>
+                    {% if result.retweeted_status %}
+                    <div>
+                        {{ result.retweeted_status.user.screen_name }} ({{ result.retweeted_status.user.name }}):
+                        {{ result.retweeted_status.text|safe }}
+                    </div>
+                    {% endif %}
+                    {% if result.thumbnail_pic %}
+                    <div>
+                        <a href="{{ result.original_pic }}"><img src="{{ result.thumbnail_pic }}" /></a>
+                        {% if result.pic_urls|length > 1 %}共有{{ result.pic_urls|length }}张图片{% endif %}
+                    </div>
+                    {% endif %}
+                    <div>
+                        {{ result.created_at }}
+                        来自 {{ result.source|safe }}
+                        <a href="http://weibo.cn/repost/{{ result.idstr|mid2url }}">转发</a>
+                        <a href="http://weibo.cn/comment/{{ result.idstr|mid2url }}">评论</a>
+                    </div>
+                ]]></description>
+                <link>http://weibo.com/{{ result.user.idstr }}/{{ result.idstr|mid2url }}</link>
+                <guid>http://weibo.com/{{ result.user.idstr }}/{{ result.idstr|mid2url }}</guid>
+                <pubDate>{{ result.created_at|rfc822 }}</pubDate>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>

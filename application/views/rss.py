@@ -23,10 +23,10 @@ class RSS(views.BaseHandler):
             "feature": 0,
         }
         try:
-            result = api.get("statuses/home_timeline", version="", **params).json()
+            results = api.get("statuses/home_timeline", version="", **params).json()
         except weibo.Error as e:
             logging.exception(str(e))
             self.response.status_int = 500
             return
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
-        logging.debug(result)
+        self.render_response("rss.xml", results=results)
