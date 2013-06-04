@@ -28,12 +28,12 @@
                     <div>
                         {{ result.created_at }}
                         来自 {{ result.source|safe }}
-                        <a href="http://weibo.cn/repost/{{ result.idstr|mid2url }}">转发</a>
-                        <a href="http://weibo.cn/comment/{{ result.idstr|mid2url }}">评论</a>
+                        <a href="http://weibo.cn/repost/{{ result.mid|mid2url }}">转发</a>
+                        <a href="http://weibo.cn/comment/{{ result.mid|mid2url }}">评论</a>
                     </div>
                 ]]></description>
-                <link>http://weibo.com/{{ result.user.idstr }}/{{ result.idstr|mid2url }}</link>
-                <guid>http://weibo.com/{{ result.user.idstr }}/{{ result.idstr|mid2url }}</guid>
+                <link>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
+                <guid>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</guid>
                 <pubDate>{{ result.created_at|rfc822 }}</pubDate>
             </item>
         {% endfor %}
