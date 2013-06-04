@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import email.utils
+import time
 
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -21,4 +22,4 @@ def mid2url(mid):
 
 
 def rfc822(obj):
-    return email.utils.formatdate(email.utils.mktime(email.utils.parsedate(obj)))
+    return email.utils.formatdate(time.mktime(email.utils.parsedate(obj)))
