@@ -40,11 +40,11 @@ class API(object):
                                                     oauth_token, oauth_token_secret, verifier=oauth_verifier,
                                                     signature_type=SIGNATURE_TYPE)
 
-    def request(self, method, endpoint, params=None, files=None, version="1.1", **kwargs):
+    def request(self, method, endpoint, params=None, files=None, version="", **kwargs):
         if endpoint.startswith('http://') or endpoint.startswith('https://'):
             url = endpoint
         else:
-            url = "%s/%s/%s.json" % (BASE_URL, version, endpoint.lower())
+            url = "%s/%s%s.json" % (BASE_URL, version+"/" if version else "", endpoint.lower())
 
         if kwargs:
             if params is None:
