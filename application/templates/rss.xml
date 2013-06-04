@@ -7,15 +7,18 @@
         <link>http://weibo.com/</link>
         {% for result in results %}
             <item>
-                <title>@{{ result.user.screen_name }}: {{ result.rss_title|e }}</title>
+                <title>@{{ result.user.screen_name }}：{{ result.text }} {% if result.retweeted_status %}转发：
+                    {{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}</title>
                 <description><![CDATA[
                     <div>
                         {{ result.user.screen_name }} ({{ result.user.name }}):
+                        <br />
                         {{ result.text|safe }}
                     </div>
                     {% if result.retweeted_status %}
                     <div>
                         {{ result.retweeted_status.user.screen_name }} ({{ result.retweeted_status.user.name }}):
+                        <br />
                         {{ result.retweeted_status.text|safe }}
                     </div>
                     {% endif %}
