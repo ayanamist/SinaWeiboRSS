@@ -7,8 +7,6 @@ import time
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
-# from http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-url_regex = re.compile(ur"\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))", re.I)
 
 
 def mid2url(mid):
@@ -36,7 +34,3 @@ def strftime(created_at):
     if now_t.tm_year != t.tm_year:
         date_fmt = "%Y-" + date_fmt
     return time.strftime(date_fmt, t)
-
-
-def expand(obj):
-    return url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)

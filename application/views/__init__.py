@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
 from os import path
+import urllib
 
 import webapp2
-
 from webapp2_extras import jinja2
 
 from application import utils
@@ -23,7 +23,8 @@ class BaseHandler(webapp2.RequestHandler):
             "mid2url": utils.mid2url,
             "rfc822": utils.rfc822,
             "strftime": utils.strftime,
-            "expand": utils.expand,
+            "quote": urllib.quote,
+            "utf8": lambda x: x.encode("utf8"),
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
         return jinja2.get_jinja2(app=self.app)
