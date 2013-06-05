@@ -22,7 +22,7 @@
                     </a>
                     :
                     <br />
-                    {{ result.text|urlize(40, true)|safe }}
+                    {{ result.text|expand|safe }}
                 </div>
                 {% if result.retweeted_status %}
                 <blockquote>
@@ -35,7 +35,7 @@
                         </a>
                         :
                         <br />
-                        {{ result.retweeted_status.text|urlize(40, true)|safe }}
+                        {{ result.retweeted_status.text|expand|safe }}
                     </div>
                     {% if result.retweeted_status.thumbnail_pic %}
                     <div>

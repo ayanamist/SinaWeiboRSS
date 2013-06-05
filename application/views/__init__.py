@@ -23,6 +23,7 @@ class BaseHandler(webapp2.RequestHandler):
             "mid2url": utils.mid2url,
             "rfc822": utils.rfc822,
             "strftime": utils.strftime,
+            "expand": utils.expand,
             "quote": urllib.quote,
             "utf8": lambda x: x.encode("utf8"),
         }
