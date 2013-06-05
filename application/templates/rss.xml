@@ -40,8 +40,8 @@
                     </div>
                     {% if result.retweeted_status.thumbnail_pic %}
                     <div>
-                        <a href="{{ result.retweeted_status.original_pic }}">
-                            <img src="{{ result.retweeted_status.thumbnail_pic }}" />
+                        <a href="{{ result.retweeted_status.original_pic|imgproxy }}">
+                            <img src="{{ result.retweeted_status.thumbnail_pic|imgproxy }}" />
                         </a>
                         {% if result.retweeted_status.pic_urls|length > 1 %}共有
                         {{ result.retweeted_status.pic_urls|length }} 张图片{% endif %}
@@ -59,8 +59,8 @@
                 {% endif %}
                 {% if result.thumbnail_pic %}
                 <div>
-                    <a href="{{ result.original_pic }}">
-                        <img src="{{ result.thumbnail_pic }}" />
+                    <a href="{{ result.original_pic|imgproxy }}">
+                        <img src="{{ result.thumbnail_pic|imgproxy }}" />
                     </a>
                     {% if result.pic_urls|length > 1 %}共有 {{ result.pic_urls|length }} 张图片{% endif %}
                 </div>

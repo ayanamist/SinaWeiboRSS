@@ -59,7 +59,7 @@ class API(object):
             url = urlparse.urlunsplit(parts)
 
         try:
-            response = self.client.request(method=method, url=url, params=params, files=files)
+            response = self.client.request(method=method, url=url, params=params, files=files, timeout=50)
         except requests.RequestException as e:
             raise Error(str(e))
         json_content = None

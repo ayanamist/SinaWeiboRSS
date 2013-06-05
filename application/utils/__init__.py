@@ -2,8 +2,13 @@
 from __future__ import absolute_import
 
 import email.utils
+import hashlib
 import re
 import time
+
+import webapp2
+
+from application.utils import crypto
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
@@ -40,3 +45,9 @@ def strftime(created_at):
 
 def expand(obj):
     return url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
+
+
+def md5hash(url):
+    m = hashlib.md5()
+    m.update(crypto.encrypt(url, webapp2.get_app().config["SECRET_KEY"]))
+    return m.hexdigest()

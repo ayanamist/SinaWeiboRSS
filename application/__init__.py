@@ -14,7 +14,7 @@ from application.utils import monkey_patch
 
 monkey_patch.patch_all()
 
-urlfetch.set_default_fetch_deadline(30)
+urlfetch.set_default_fetch_deadline(15)
 
 config = dict((name, os.environ[name]) for name in (
     "CONSUMER_KEY",
@@ -25,5 +25,6 @@ config = dict((name, os.environ[name]) for name in (
 app = webapp2.WSGIApplication([
     webapp2.Route("/", handler="application.views.login.Login", name="login"),
     webapp2.Route("/rss/<sid>", handler="application.views.rss.RSS", name="rss"),
+    webapp2.Route("/proxy/<url>/<md5hash>", handler="application.views.proxy.Proxy", name="proxy"),
 ], config=config, debug=True)
 

@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from os import path
 import urllib
+import urlparse
 
 import webapp2
 from webapp2_extras import jinja2
@@ -26,6 +27,9 @@ class BaseHandler(webapp2.RequestHandler):
             "expand": utils.expand,
             "quote": urllib.quote,
             "utf8": lambda x: x.encode("utf8"),
+            "imgproxy": lambda url: urlparse.urljoin("https://" + webapp2.get_request().host,
+                                                     webapp2.uri_for("proxy", url=urllib.quote(url, ""),
+                                                                     md5hash=utils.md5hash(url))),
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
         return jinja2.get_jinja2(app=self.app)
