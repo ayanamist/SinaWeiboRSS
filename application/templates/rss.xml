@@ -7,9 +7,9 @@
         <link>http://weibo.com/</link>
         {% for result in results %}
             <item>
-                <title>@{{ result.user.screen_name }}：{{ result.text }}
+                <title>{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}
-                        转发：{{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}
+                        §{{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}
                     {% endif %}
                 </title>
                 <description><![CDATA[
