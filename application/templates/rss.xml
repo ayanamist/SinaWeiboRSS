@@ -15,28 +15,20 @@
                 </title>
                 <description><![CDATA[
                 <div>
-                    <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">
-                    {{ result.user.screen_name }}
-                    {% if result.user.screen_name != result.user.name %}
-                        ({{ result.user.name }})
-                    {% endif %}
-                    </a>
-                    :
+                    <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">{{ result.user.screen_name }}
+                    {% if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
-                    {{ result.text|expandurl|safe }}
+                    {{ result.text|expandurl|expandname|safe }}
                 </div>
                 {% if result.retweeted_status %}
                 <blockquote>
                     <div>
                         {% if result.retweeted_status.user %}
-                        <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">
-                        {{ result.retweeted_status.user.screen_name }}
-                        {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}
-                            ({{ result.retweeted_status.user.name }})
+                        <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">{{ result.retweeted_status.user.screen_name }}
+                        {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
+                        <br />
                         {% endif %}
-                        </a>：<br />
-                        {% endif %}
-                        {{ result.retweeted_status.text|expandurl|safe }}
+                        {{ result.retweeted_status.text|expandurl|expandname|safe }}
                     </div>
                     {% if result.retweeted_status.thumbnail_pic %}
                     <div>

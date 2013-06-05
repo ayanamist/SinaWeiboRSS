@@ -25,6 +25,7 @@ class BaseHandler(webapp2.RequestHandler):
             "rfc822": utils.rfc822,
             "strftime": utils.strftime,
             "expandurl": utils.expandurl,
+            "expandname": utils.expandname,
             "quote": urllib.quote,
             "utf8": lambda x: x.encode("utf8"),
             "imgproxy": lambda url: urlparse.urljoin("https://" + webapp2.get_request().host,
