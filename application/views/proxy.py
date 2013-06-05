@@ -14,6 +14,11 @@ class Proxy(views.BaseHandler):
         if utils.md5hash(url) != md5hash:
             self.response.status_int = 403
             return
-        r = requests.get(url)
-        self.response.headers.update(r.headers)
-        self.response.write(r.content)
+        try:
+            r = requests.get(url, timeout=50)
+        except requests.RequestException:
+            self.response.status_int = 502
+            self.response.write("Timeout")
+        else:
+            self.response.headers.update(r.headers)
+            self.response.write(r.content)

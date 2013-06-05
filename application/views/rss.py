@@ -37,7 +37,8 @@ class RSS(views.BaseHandler):
                 results = api.get("statuses/home_timeline", version="", **params).json()
             except weibo.Error as e:
                 logging.exception(str(e))
-                self.response.status_int = 500
+                self.response.status_int = 502
+                self.response.write("API Timeout")
                 return
             memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
