@@ -23,7 +23,7 @@
                     </a>
                     :
                     <br />
-                    {{ result.text|expand|safe }}
+                    {{ result.text|expandurl|safe }}
                 </div>
                 {% if result.retweeted_status %}
                 <blockquote>
@@ -36,7 +36,7 @@
                         {% endif %}
                         </a>：<br />
                         {% endif %}
-                        {{ result.retweeted_status.text|expand|safe }}
+                        {{ result.retweeted_status.text|expandurl|safe }}
                     </div>
                     {% if result.retweeted_status.thumbnail_pic %}
                     <div>

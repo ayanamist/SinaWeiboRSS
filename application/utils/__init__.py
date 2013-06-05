@@ -43,7 +43,7 @@ def strftime(created_at):
     return time.strftime(date_fmt, t)
 
 
-def expand(obj):
+def expandurl(obj):
     return url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
 
 
