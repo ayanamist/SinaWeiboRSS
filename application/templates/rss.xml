@@ -7,34 +7,56 @@
         <link>http://weibo.com/</link>
         {% for result in results %}
             <item>
-                <title>@{{ result.user.screen_name }}：{{ result.text }} {% if result.retweeted_status %}转发：
-                    {{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}</title>
-                <description><![CDATA[
-                    <div>
-                        {{ result.user.screen_name }} ({{ result.user.name }}):
-                        <br />
-                        {{ result.text|safe }}
-                    </div>
+                <title>@{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}
+                        转发：{{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}
+                    {% endif %}
+                </title>
+                <description><![CDATA[
+                <div>
+                    {{ result.user.screen_name }} ({{ result.user.name }}):
+                    <br />
+                    {{ result.text|safe }}
+                </div>
+                {% if result.retweeted_status %}
+                <blockquote>
                     <div>
                         {{ result.retweeted_status.user.screen_name }} ({{ result.retweeted_status.user.name }}):
                         <br />
                         {{ result.retweeted_status.text|safe }}
                     </div>
-                    {% endif %}
-                    {% if result.thumbnail_pic %}
+                    {% if result.retweeted_status.thumbnail_pic %}
                     <div>
-                        <a href="{{ result.original_pic }}"><img src="{{ result.thumbnail_pic }}" /></a>
-                        {% if result.pic_urls|length > 1 %}共有{{ result.pic_urls|length }}张图片{% endif %}
+                        <a href="{{ result.retweeted_status.original_pic }}">
+                            <img src="{{ result.retweeted_status.thumbnail_pic }}" />
+                        </a>
+                        {% if result.retweeted_status.pic_urls|length > 1 %}共有
+                    {{ result.retweeted_status.pic_urls|length }} 张图片{% endif %}
                     </div>
                     {% endif %}
                     <div>
-                        {{ result.created_at }}
-                        来自 {{ result.source|safe }}
-                        <a href="http://weibo.cn/repost/{{ result.mid|mid2url }}">转发</a>
-                        <a href="http://weibo.cn/comment/{{ result.mid|mid2url }}">评论</a>
+                        {{ result.retweeted_status.created_at|strftime }}
+                        来自 {{ result.retweeted_status.source|safe }}
+                        <a href="http://weibo.cn/repost/{{ result.retweeted_status.mid|mid2url }}">转发</a>
+                        <a href="http://weibo.cn/comment/{{ result.retweeted_status.mid|mid2url }}">评论</a>
                     </div>
-                ]]></description>
+                </blockquote>
+                {% endif %}
+                {% if result.thumbnail_pic %}
+                <div>
+                    <a href="{{ result.original_pic }}">
+                        <img src="{{ result.thumbnail_pic }}" />
+                    </a>
+                    {% if result.pic_urls|length > 1 %}共有 {{ result.pic_urls|length }} 张图片{% endif %}
+                </div>
+                {% endif %}
+                <div>
+                    {{ result.created_at|strftime }}
+                    来自 {{ result.source|safe }}
+                    <a href="http://weibo.cn/repost/{{ result.mid|mid2url }}">转发</a>
+                    <a href="http://weibo.cn/comment/{{ result.mid|mid2url }}">评论</a>
+                </div>
+            ]]></description>
                 <link>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
                 <guid>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</guid>
                 <pubDate>{{ result.created_at|rfc822 }}</pubDate>

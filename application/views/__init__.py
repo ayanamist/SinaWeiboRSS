@@ -22,6 +22,7 @@ class BaseHandler(webapp2.RequestHandler):
         default_config["filters"] = {
             "mid2url": utils.mid2url,
             "rfc822": utils.rfc822,
+            "strftime": utils.strftime,
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
         return jinja2.get_jinja2(app=self.app)
