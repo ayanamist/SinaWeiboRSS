@@ -9,7 +9,8 @@
             <item>
                 <title>{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}
-                        §{{ result.retweeted_status.user.screen_name }}：{{ result.retweeted_status.text }}
+                        §{% if result.retweeted_status.user %}{{ result.retweeted_status.user.screen_name }}：{% endif %}
+                        {{ result.retweeted_status.text }}
                     {% endif %}
                 </title>
                 <description><![CDATA[
@@ -27,14 +28,14 @@
                 {% if result.retweeted_status %}
                 <blockquote>
                     <div>
+                        {% if result.retweeted_status.user %}
                         <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">
                         {{ result.retweeted_status.user.screen_name }}
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}
                             ({{ result.retweeted_status.user.name }})
                         {% endif %}
-                        </a>
-                        :
-                        <br />
+                        </a>：<br />
+                        {% endif %}
                         {{ result.retweeted_status.text|expand|safe }}
                     </div>
                     {% if result.retweeted_status.thumbnail_pic %}
