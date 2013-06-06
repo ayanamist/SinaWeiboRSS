@@ -12,8 +12,8 @@ from application.utils import crypto
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
-# from http://daringfireball.net/2009/11/liberal_regex_for_matching_urls
-url_regex = re.compile(ur"\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))", re.I)
+# from http://stackoverflow.com/questions/833469/regular-expression-for-url
+url_regex = re.compile(ur"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:ww‌​w.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:/[\+~%/.-_\w]*)?\??(?:[-\+=&;%@.\w_]*)#?‌​(?:[\w]*))?)", re.I)
 name_regex = re.compile(ur"@([a-z0-9\-_\u4e00-\u9fff]{2,30})", re.I)
 
 
