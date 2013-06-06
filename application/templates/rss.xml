@@ -9,7 +9,8 @@
             <item>
                 <title>{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}
-                        §{% if result.retweeted_status.user %}{{ result.retweeted_status.user.screen_name }}：{% endif %}
+                        ▕▏
+                        {% if result.retweeted_status.user %}{{ result.retweeted_status.user.screen_name }}：{% endif %}
                         {{ result.retweeted_status.text }}
                     {% endif %}
                 </title>
