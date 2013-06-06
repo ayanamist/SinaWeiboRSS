@@ -40,6 +40,7 @@
                         {{ result.retweeted_status.pic_urls|length }} 张图片{% endif %}
                     </div>
                     {% endif %}
+                    {% if result.retweeted_status.user %}
                     <div>
                         <a href="http://weibo.com/{{ result.retweeted_status.user.id }}/{{ result.retweeted_status.mid|mid2url }}">
                         {{ result.retweeted_status.created_at|strftime }}
@@ -48,6 +49,7 @@
                         <a href="http://weibo.cn/repost/{{ result.retweeted_status.mid|mid2url }}">转发</a>
                         <a href="http://weibo.cn/comment/{{ result.retweeted_status.mid|mid2url }}">评论</a>
                     </div>
+                    {% endif %}
                 </blockquote>
                 {% endif %}
                 {% if result.thumbnail_pic %}
