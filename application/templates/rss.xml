@@ -7,16 +7,16 @@
         <link>http://weibo.com/</link>
         {% for result in results %}
             <item>
-                <title>{{ result.user.screen_name }}：{{ result.text }}
+                <title>@{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}
                         ▕▏
-                        {% if result.retweeted_status.user %}{{ result.retweeted_status.user.screen_name }}：{% endif %}
+                        {% if result.retweeted_status.user %}@{{ result.retweeted_status.user.screen_name }}：{% endif %}
                         {{ result.retweeted_status.text }}
                     {% endif %}
                 </title>
                 <description><![CDATA[
                 <div>
-                    <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">{{ result.user.screen_name }}
+                    <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
                     {% if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
                     {{ result.text|expandurl|expandname|safe }}
@@ -25,7 +25,7 @@
                 <blockquote>
                     <div>
                         {% if result.retweeted_status.user %}
-                        <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">{{ result.retweeted_status.user.screen_name }}
+                        <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
                         <br />
                         {% endif %}
