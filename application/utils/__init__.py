@@ -12,8 +12,7 @@ from application.utils import crypto
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
-# from http://sigizmund.com/a-url-matching-regex-in-python-%E2%80%94-any-problems/
-url_regex = re.compile(ur"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&#+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+url_regex = re.compile(ur"http[s]?://[a-zA-Z0-9$-_@.&#+!*(),%?]+")
 name_regex = re.compile(ur"@([A-Za-z0-9\-_\u4e00-\u9fff]{2,30})")
 
 
