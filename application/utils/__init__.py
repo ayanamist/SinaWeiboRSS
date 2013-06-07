@@ -12,9 +12,9 @@ from application.utils import crypto
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
-# from http://stackoverflow.com/questions/833469/regular-expression-for-url
-url_regex = re.compile(ur"((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(:[0-9]+)?|(?:ww‌​w.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:/[\+~%/.-_\w]*)?\??(?:[-\+=&;%@.\w_]*)#?‌​(?:[\w]*))?)", re.I)
-name_regex = re.compile(ur"@([a-z0-9\-_\u4e00-\u9fff]{2,30})", re.I)
+# from http://sigizmund.com/a-url-matching-regex-in-python-%E2%80%94-any-problems/
+url_regex = re.compile(ur"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&#+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+name_regex = re.compile(ur"@([A-Za-z0-9\-_\u4e00-\u9fff]{2,30})")
 
 
 def mid2url(mid):
