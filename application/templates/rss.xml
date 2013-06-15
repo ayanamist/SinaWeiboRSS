@@ -6,6 +6,9 @@
         <description>导出新浪微博首页时间线为RSS</description>
         <link>http://weibo.com/</link>
         {% for result in results %}
+            {%- if result.retweeted_status and not result.retweeted_status.user %}
+                {% continue %}
+            {% endif -%}
             <item>
                 <title>@{{ result.user.screen_name }}：{{ result.text }}
                     {% if result.retweeted_status %}

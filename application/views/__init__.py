@@ -16,6 +16,7 @@ class BaseHandler(webapp2.RequestHandler):
         default_config = jinja2.default_config
         environment_args = default_config["environment_args"]
         environment_args["auto_reload"] = False
+        environment_args["extensions"].append("jinja2.ext.loopcontrols")
         default_config["globals"] = {
             "app": self.app,
             "uri_for": webapp2.uri_for,
