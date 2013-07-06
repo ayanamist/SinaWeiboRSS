@@ -35,8 +35,8 @@ class RSS(views.BaseHandler):
             }
             try:
                 results = api.get("statuses/home_timeline", version="", **params).json()
-            except weibo.Error as e:
-                logging.exception(str(e))
+            except weibo.Error:
+                logging.exception("API Timeout")
                 self.response.status_int = 502
                 self.response.write("API Timeout")
                 return
