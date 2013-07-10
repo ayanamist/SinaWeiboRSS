@@ -4,7 +4,11 @@ import os
 import sys
 
 import webapp2
-from google.appengine.api import urlfetch
+try:
+    from google.appengine.api import urlfetch
+    urlfetch.set_default_fetch_deadline(10)
+except ImportError:
+    pass
 
 lib_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "lib"))
 for dir_path in os.listdir(lib_path):
@@ -13,8 +17,6 @@ for dir_path in os.listdir(lib_path):
 from application.utils import monkey_patch
 
 monkey_patch.patch_all()
-
-urlfetch.set_default_fetch_deadline(10)
 
 config = dict((name, os.environ[name]) for name in (
     "CONSUMER_KEY",

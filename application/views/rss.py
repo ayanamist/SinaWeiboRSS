@@ -4,7 +4,10 @@ import json
 import logging
 import zlib
 
-from google.appengine.api import memcache
+try:
+    from google.appengine.api import memcache
+except ImportError:
+    memcache = None
 
 from application import views
 from application.models import weibo
@@ -13,7 +16,10 @@ from application.utils import crypto
 
 class RSS(views.BaseHandler):
     def get(self, sid):
-        results = memcache.get(sid)
+        if memcache:
+            results = memcache.get(sid)
+        else:
+            results = None
         if results:
             try:
                 results = json.loads(zlib.decompress(results))
@@ -40,6 +46,7 @@ class RSS(views.BaseHandler):
                 self.response.status_int = 502
                 self.response.write("API Timeout")
                 return
-            memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
+            if memcache:
+                memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
