@@ -14,7 +14,7 @@ from application.utils import monkey_patch
 
 monkey_patch.patch_all()
 
-urlfetch.set_default_fetch_deadline(15)
+urlfetch.set_default_fetch_deadline(10)
 
 config = dict((name, os.environ[name]) for name in (
     "CONSUMER_KEY",

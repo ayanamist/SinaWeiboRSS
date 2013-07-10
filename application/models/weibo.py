@@ -61,7 +61,7 @@ class API(object):
         remain_retries = 3
         while True:
             try:
-                response = self.client.request(method=method, url=url, params=params, files=files, timeout=50)
+                response = self.client.request(method=method, url=url, params=params, files=files, timeout=20)
             except requests.RequestException as e:
                 if not remain_retries:
                     raise Error(str(e))
