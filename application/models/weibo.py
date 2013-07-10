@@ -14,7 +14,6 @@ OAUTH_REQUEST_TOKEN_URL = "%s/oauth/request_token" % BASE_URL
 OAUTH_ACCESS_TOKEN_URL = "%s/oauth/access_token" % BASE_URL
 OAUTH_AUTHORIZE_URL = "%s/oauth/authorize" % BASE_URL
 
-USER_AGENT = "SinaWeiboRSS/1.0"
 SIGNATURE_TYPE = "auth_header"
 
 
@@ -30,7 +29,6 @@ class API(object):
         self.consumer_secret = consumer_secret
 
         self.client = requests.Session()
-        self.client.headers = {"User-Agent": USER_AGENT}
 
         self.get = functools.partial(self.request, "GET")
         self.post = functools.partial(self.request, "POST")
