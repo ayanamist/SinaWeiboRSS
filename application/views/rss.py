@@ -6,8 +6,10 @@ import zlib
 
 try:
     from google.appengine.api import memcache
+    from google.appengine.api import urlfetch
 except ImportError:
     memcache = None
+    urlfetch = None
 
 from application import views
 from application.models import weibo
@@ -32,6 +34,15 @@ class RSS(views.BaseHandler):
             except (ValueError, TypeError):
                 self.response.status_int = 403
                 return
+
+            # Visit API endpoint directly via urlfetch.fetch to make subsequent request successful.
+            # It's maybe a GAE bug.
+            rpc = None
+            if urlfetch:
+                rpc = urlfetch.create_rpc()
+                urlfetch.make_fetch_call(rpc, "%s/statuses/home_timeline.json" % weibo.BASE_URL,
+                                         follow_redirects=False)
+
             api = weibo.API(self.app.config["CONSUMER_KEY"], self.app.config["CONSUMER_SECRET"])
             api.bind_auth(oauth_token, oauth_token_secret)
             params = {
@@ -46,7 +57,14 @@ class RSS(views.BaseHandler):
                 self.response.status_int = 502
                 self.response.write("API Timeout")
                 return
+            finally:
+                if rpc:
+                    try:
+                        rpc.get_result()
+                    except urlfetch.Error as e:
+                        logging.debug("Fake request failed: %s" % str(e))
             if memcache:
                 memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
+
