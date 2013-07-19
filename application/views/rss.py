@@ -7,9 +7,13 @@ import zlib
 try:
     from google.appengine.api import memcache
     from google.appengine.api import urlfetch
+    from google.appengine.runtime.apiproxy_errors import DeadlineExceededError
 except ImportError:
     memcache = None
     urlfetch = None
+
+    class DeadlineExceededError(Exception):
+        pass
 
 from application import views
 from application.models import weibo
@@ -52,7 +56,7 @@ class RSS(views.BaseHandler):
             }
             try:
                 results = api.get("statuses/home_timeline", version="", **params).json()
-            except weibo.Error:
+            except (weibo.Error, DeadlineExceededError):
                 logging.exception("API Timeout")
                 self.response.status_int = 502
                 self.response.write("API Timeout")
