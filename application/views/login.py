@@ -31,7 +31,7 @@ class Login(views.BaseHandler):
             else:
                 sid = crypto.encrypt("%s:%s" % (access_token["oauth_token"], access_token["oauth_token_secret"]),
                                      self.app.config["SECRET_KEY"])
-                rss_url = urlparse.urljoin(self.request.host_url, self.uri_for("rss", sid=sid))
+                rss_url = urlparse.urljoin("http://" + self.request.host, self.uri_for("rss", sid=sid))
                 self.render_response("rss.html", rss_url=rss_url)
                 return
         else:

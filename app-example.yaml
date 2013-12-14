@@ -5,8 +5,8 @@ api_version: 1
 threadsafe: true
 
 env_variables:
-  CONSUMER_KEY: "2323547071"
-  CONSUMER_SECRET: "16ed80cc77fea11f7f7e96eca178ada3"
+  CONSUMER_KEY: "3510766076"
+  CONSUMER_SECRET: "f97dfdd530d85eaaee45e63ee47445a3"
   SECRET_KEY: ""
 
 libraries:
