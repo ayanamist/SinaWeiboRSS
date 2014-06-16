@@ -34,14 +34,16 @@
                         {% endif %}
                         {{ result.retweeted_status.text|expandurl|expandname|safe }}
                     </div>
-                    {% if result.retweeted_status.thumbnail_pic %}
+                    {% for pic_url in result.retweeted_status.pic_urls %}
                     <div>
-                        <a href="{{ result.retweeted_status.original_pic }}">
-                            <img src="{{ result.retweeted_status.thumbnail_pic }}" />
+                        <a href="{{ pic_url.thumbnail_pic|original_pic }}">
+                            <img src="{{ pic_url.thumbnail_pic }}" alt="pic" />
                         </a>
-                        共有{{ result.retweeted_status.pic_urls|length }} 张图片
                     </div>
-                    {% endif %}
+                    {% endfor %}
+                    {% if result.retweeted_status.pic_urls|length -%}
+                    <div>共有{{ result.retweeted_status.pic_urls|length }} 张图片</div>
+                    {%- endif %}
                     {% if result.retweeted_status.user %}
                     <div>
                         <a href="http://weibo.com/{{ result.retweeted_status.user.id }}/{{ result.retweeted_status.mid|mid2url }}">
@@ -54,14 +56,16 @@
                     {% endif %}
                 </blockquote>
                 {% endif %}
-                {% if result.thumbnail_pic %}
+                {% for pic_url in result.pic_urls %}
                 <div>
-                    <a href="{{ result.original_pic }}">
-                        <img src="{{ result.thumbnail_pic }}" />
+                    <a href="{{ pic_url.thumbnail_pic|original_pic }}">
+                        <img src="{{ pic_url.thumbnail_pic }}" alt="pic" />
                     </a>
-                    共有 {{ result.pic_urls|length }} 张图片
                 </div>
-                {% endif %}
+                {% endfor %}
+                {% if result.pic_urls|length -%}
+                <div>共有{{ result.pic_urls|length }} 张图片</div>
+                {%- endif %}
                 <div>
                     <a href="http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}">
                     {{ result.created_at|strftime }}

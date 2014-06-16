@@ -55,3 +55,13 @@ def md5hash(url):
     m = hashlib.md5()
     m.update(crypto.encrypt(url, webapp2.get_app().config["SECRET_KEY"]))
     return m.hexdigest()
+
+_regex = re.compile(r"(http(?:s)?://ww(\d)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]+)", re.I)
+
+
+def original_pic(url):
+    matched = _regex.match(url)
+    if matched:
+        return url[:matched.start(3)] + "large" + url[matched.end(3):]
+    else:
+        return url
