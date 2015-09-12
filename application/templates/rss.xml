@@ -52,6 +52,7 @@
                         来自 {{ result.retweeted_status.source|safe }}
                         <a href="http://weibo.cn/repost/{{ result.retweeted_status.mid|mid2url }}">转发</a>
                         <a href="http://weibo.cn/comment/{{ result.retweeted_status.mid|mid2url }}">评论</a>
+                        <a href="sinaweibo://detail?mblogid={{ result.retweeted_status.mid }}">APP</a>
                     </div>
                     {% endif %}
                 </blockquote>
@@ -73,6 +74,7 @@
                     来自 {{ result.source|safe }}
                     <a href="http://weibo.cn/repost/{{ result.mid|mid2url }}">转发</a>
                     <a href="http://weibo.cn/comment/{{ result.mid|mid2url }}">评论</a>
+                    <a href="sinaweibo://detail?mblogid={{ result.mid }}">APP</a>
                 </div>
             ]]></description>
                 <link>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
