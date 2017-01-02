@@ -56,7 +56,7 @@ def md5hash(url):
     m.update(crypto.encrypt(url, webapp2.get_app().config["SECRET_KEY"]))
     return m.hexdigest()
 
-_regex = re.compile(r"(http(?:s)?://ww(\d)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]+)", re.I)
+_regex = re.compile(r"(http(?:s)?://(\w+)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]+)", re.I)
 
 
 def original_pic(url):
