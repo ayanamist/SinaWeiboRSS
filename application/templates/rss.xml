@@ -10,13 +10,14 @@
                 {% continue %}
             {% endif -%}
             <item>
-                <title>@{{ result.user.screen_name }}：{{ result.text }}
+                <title><![CDATA[
+                    @{{ result.user.screen_name }}：{{ result.text }}
                     {%- if result.retweeted_status %}
                         ▕▏
                         {% if result.retweeted_status.user %}@{{ result.retweeted_status.user.screen_name }}：{% endif -%}
                         {{ result.retweeted_status.text }}
                     {% endif %}
-                </title>
+                ]]></title>
                 <description><![CDATA[
                 <div>
                     <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
