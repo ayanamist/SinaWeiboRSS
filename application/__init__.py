@@ -10,7 +10,7 @@ try:
 except ImportError:
     pass
 
-lib_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "lib"))
+lib_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "vendor"))
 for dir_path in os.listdir(lib_path):
     sys.path.insert(0, os.path.join(lib_path, dir_path))
 
