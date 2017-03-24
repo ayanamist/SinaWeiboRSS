@@ -17,9 +17,9 @@ class RSS(views.BaseHandler):
         results = memcache.get(sid)
         if results:
             try:
-                results = json.loads(zlib.decompress(results))["statuses"]
+                results = json.loads(zlib.decompress(results))
             except Exception:
-                pass
+                results = None
         if not results:
             try:
                 access_token = crypto.decrypt(sid, self.app.config["SECRET_KEY"])
@@ -41,7 +41,6 @@ class RSS(views.BaseHandler):
                 self.response.status_int = 500
                 self.response.write(body["error"])
                 return
-            memcache.set(sid, zlib.compress(json.dumps(content), 9), time=120)
             results = body["statuses"]
             long_text_ids = []
             long_text_map = dict()
@@ -68,5 +67,6 @@ class RSS(views.BaseHandler):
                         logging.debug("replace long text for %s: %s", status["idstr"], text)
                         status["text"] = text
                         status["isLongText"] = False
+            memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
