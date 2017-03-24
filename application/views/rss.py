@@ -68,5 +68,7 @@ class RSS(views.BaseHandler):
                         status["text"] = text
                         status["isLongText"] = False
             memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
+        else:
+            logging.debug("sid %s from cache", sid)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
