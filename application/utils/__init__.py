@@ -2,11 +2,8 @@
 from __future__ import absolute_import
 
 import email.utils
-import hashlib
 import re
 import time
-
-import webapp2
 
 from application.utils import crypto
 
@@ -50,11 +47,6 @@ def expandurl(obj):
 def expandname(obj):
     return name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
 
-
-def md5hash(url):
-    m = hashlib.md5()
-    m.update(crypto.encrypt(url, webapp2.get_app().config["SECRET_KEY"]))
-    return m.hexdigest()
 
 _regex = re.compile(r"(http(?:s)?://(\w+)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]+)", re.I)
 

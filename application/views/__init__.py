@@ -29,9 +29,6 @@ class BaseHandler(webapp2.RequestHandler):
             "expandname": utils.expandname,
             "quote": urllib.quote,
             "utf8": lambda x: x.encode("utf8"),
-            "imgproxy": lambda url: urlparse.urljoin("https://" + webapp2.get_request().host,
-                                                     webapp2.uri_for("proxy", url=urllib.quote(url, ""),
-                                                                     md5hash=utils.md5hash(url))),
             "original_pic": utils.original_pic,
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
