@@ -48,7 +48,7 @@ def expandurl(obj):
 
 
 def expandname(obj):
-    return name_regex.sub(r'<a href="http://weibo.cn/n/\g<1>">@\g<1></a>', obj)
+    return name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
 
 
 def md5hash(url):
