@@ -56,8 +56,6 @@
                         {{ result.retweeted_status.created_at|strftime }}
                         </a>
                         来自 {{ result.retweeted_status.source|safe }}
-                        <a href="http://weibo.cn/repost/{{ result.retweeted_status.mid|mid2url }}">转发</a>
-                        <a href="http://weibo.cn/comment/{{ result.retweeted_status.mid|mid2url }}">评论</a>
                     </div>
                     {% endif %}
                 </blockquote>
@@ -77,8 +75,6 @@
                     {{ result.created_at|strftime }}
                     </a>
                     来自 {{ result.source|safe }}
-                    <a href="http://weibo.cn/repost/{{ result.mid|mid2url }}">转发</a>
-                    <a href="http://weibo.cn/comment/{{ result.mid|mid2url }}">评论</a>
                 </div>
             ]]></description>
                 <link>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
