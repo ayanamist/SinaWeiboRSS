@@ -23,7 +23,7 @@
                     <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
                     {% if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
-                    {{ result.text|expandurl|expandname|safe }}
+                    {{ result.text|e|expandurl|expandname|safe }}
                 </div>
                 {% if result.retweeted_status %}
                 <blockquote>
@@ -33,7 +33,7 @@
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
                         <br />
                         {% endif %}
-                        {{ result.retweeted_status.text|expandurl|expandname|safe }}
+                        {{ result.retweeted_status.text|e|expandurl|expandname|safe }}
                     </div>
                     {% for pic_url in result.retweeted_status.pic_urls %}
                     <div>
