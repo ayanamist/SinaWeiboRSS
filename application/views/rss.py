@@ -2,73 +2,52 @@ from __future__ import absolute_import
 
 import json
 import logging
+import urllib
 import zlib
 
-try:
-    from google.appengine.api import memcache
-    from google.appengine.api import urlfetch
-    from google.appengine.runtime.apiproxy_errors import DeadlineExceededError
-except ImportError:
-    memcache = None
-    urlfetch = None
-
-    class DeadlineExceededError(Exception):
-        pass
+from google.appengine.api import memcache
+from google.appengine.api import urlfetch
 
 from application import views
-from application.models import weibo
 from application.utils import crypto
 
 
 class RSS(views.BaseHandler):
     def get(self, sid):
-        if memcache:
-            results = memcache.get(sid)
-        else:
-            results = None
+        results = memcache.get(sid)
         if results:
             try:
-                results = json.loads(zlib.decompress(results))
-            except (ValueError, TypeError):
+                results = json.loads(zlib.decompress(results))["statuses"]
+            except Exception:
                 pass
         if not results:
             try:
-                plaintext_sid = crypto.decrypt(sid, self.app.config["SECRET_KEY"])
-                oauth_token, oauth_token_secret = plaintext_sid.split(":", 1)
+                access_token = crypto.decrypt(sid, self.app.config["SECRET_KEY"])
             except (ValueError, TypeError):
                 self.response.status_int = 403
                 return
 
-            # Visit API endpoint directly via urlfetch.fetch to make subsequent request successful.
-            # It's maybe a GAE bug.
-            rpc = None
-            if urlfetch:
-                rpc = urlfetch.create_rpc()
-                urlfetch.make_fetch_call(rpc, "%s/statuses/home_timeline.json" % weibo.BASE_URL,
-                                         follow_redirects=False)
-
-            api = weibo.API(self.app.config["CONSUMER_KEY"], self.app.config["CONSUMER_SECRET"])
-            api.bind_auth(oauth_token, oauth_token_secret)
-            params = {
+            logging.debug("access_token: %s", access_token)
+            resp = urlfetch.fetch("https://api.weibo.com/2/statuses/home_timeline.json?" + urllib.urlencode({
                 "count": 100,
                 "base_app": 0,
                 "feature": 0,
-            }
-            try:
-                results = api.get("statuses/home_timeline", version="", **params).json()
-            except (weibo.Error, DeadlineExceededError):
-                logging.exception("API Timeout")
-                self.response.status_int = 502
-                self.response.write("API Timeout")
+                "trim_user": 0,
+            }), headers={"Authorization": "OAuth2 " + access_token})
+            if resp.status_code != 200:
+                logging.error("status_code %d, content: %s", resp.status_code, resp.content)
+                self.response.status_int = 500
+                self.response.write(resp.content)
                 return
-            finally:
-                if rpc:
-                    try:
-                        rpc.get_result()
-                    except urlfetch.Error as e:
-                        logging.debug("Fake request failed: %s" % str(e))
-            if memcache:
-                memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
+            body = json.loads(resp.content)
+            if "error" in body:
+                logging.error("error: %s", resp.content)
+                self.response.status_int = 500
+                self.response.write(body["error"])
+                return
+            memcache.set(sid, zlib.compress(json.dumps(resp.content), 9), time=120)
+            results = body["statuses"]
+            for item in results:
+                logging.debug(json.dumps(item))
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
-

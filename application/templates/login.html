@@ -2,20 +2,7 @@
 {% block main %}
     <div class="login">
         <form method="post" action="{{ uri_for("login") }}" accept-charset="UTF-8">
-            <fieldset>
-                <legend>用新浪微博账号登录</legend>
-                <div class="fieldset-wrapper">
-                    <div class="form-item" id="edit-name">
-                        <label for="username">邮箱：</label>
-                        <input name="username" id="username" type="text"/>
-                    </div>
-                    <div class="form-item" id="edit-pass">
-                        <label for="password">密码：</label>
-                        <input name="password" id="password" type="password"/>
-                    </div>
-                </div>
-            </fieldset>
-            <button name="submit" id="submit" type="submit">登录</button>
+            <button name="submit" id="submit" type="submit">跳转到微博页面登录</button>
         </form>
     </div>
 {% endblock %}

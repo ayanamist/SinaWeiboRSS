@@ -18,10 +18,6 @@ def patch_logging():
     for func_name in ("critical", "error", "exception", "warn", "warning", "info", "debug", "log"):
         setattr(logging, func_name, logger_wrap(getattr(logging, func_name)))
 
-    # Mute noisy logging.
-    logging.getLogger("requests").setLevel(logging.ERROR)
-    logging.getLogger("oauthlib").setLevel(logging.ERROR)
-
 
 def patch_all():
     patch_logging()
