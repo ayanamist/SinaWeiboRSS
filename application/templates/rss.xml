@@ -11,7 +11,7 @@
             {% endif -%}
             <item>
                 <title><![CDATA[
-                    @{{ result.user.screen_name }}：{{ result.text }}
+                    @{{ result.user.screen_name }}：{{ result.text|safe }}
                     {%- if result.retweeted_status %}
                         ▕▏
                         {% if result.retweeted_status.user %}@{{ result.retweeted_status.user.screen_name }}：{% endif -%}
@@ -20,20 +20,20 @@
                 ]]></title>
                 <description><![CDATA[
                 <div>
-                    <a href="http://weibo.cn/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
-                    {% if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
+                    <a href="http://weibo.com/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
+                    {%- if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
-                    {{ result.text|e|expandurl|expandname|safe }}
+                    {{ result.text|expandurl|expandname|safe }}
                 </div>
                 {% if result.retweeted_status %}
                 <blockquote>
                     <div>
                         {% if result.retweeted_status.user %}
-                        <a href="http://weibo.cn/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
+                        <a href="http://weibo.com/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
                         <br />
                         {% endif %}
-                        {{ result.retweeted_status.text|e|expandurl|expandname|safe }}
+                        {{ result.retweeted_status.text|safe|expandurl|expandname }}
                     </div>
                     {% for pic_url in result.retweeted_status.pic_urls %}
                     <div>
