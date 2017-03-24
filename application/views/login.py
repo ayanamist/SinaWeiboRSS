@@ -21,7 +21,7 @@ class Login(views.BaseHandler):
                 "client_id": self.app.config["CONSUMER_KEY"],
                 "client_secret": self.app.config["CONSUMER_SECRET"],
                 "grant_type": "authorization_code",
-                "redirect_uri": urlparse.urljoin("https://" + self.request.host, self.uri_for("login")),
+                "redirect_uri": self.app.config["CONSUMER_DOMAIN"],
                 "code": code,
             }), method=urlfetch.POST)
             resp = json.loads(r.content)
@@ -39,6 +39,6 @@ class Login(views.BaseHandler):
         authorize_url = "https://api.weibo.com/oauth2/authorize?" + urllib.urlencode({
             "client_id": self.app.config["CONSUMER_KEY"],
             "response_type": "code",
-            "redirect_uri": urlparse.urljoin("https://" + self.request.host, self.uri_for("login")),
+            "redirect_uri": self.app.config["CONSUMER_DOMAIN"],
         })
         self.redirect(authorize_url)

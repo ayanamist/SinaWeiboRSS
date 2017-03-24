@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import os
-import sys
 
 import webapp2
 
@@ -19,6 +18,7 @@ monkey_patch.patch_all()
 config = dict((name, os.environ[name]) for name in (
     "CONSUMER_KEY",
     "CONSUMER_SECRET",
+    "CONSUMER_DOMAIN",
     "SECRET_KEY",
 ))
 

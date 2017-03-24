@@ -28,26 +28,45 @@ class RSS(views.BaseHandler):
                 return
 
             logging.debug("access_token: %s", access_token)
-            resp = urlfetch.fetch("https://api.weibo.com/2/statuses/home_timeline.json?" + urllib.urlencode({
+            r = urlfetch.fetch("https://api.weibo.com/2/statuses/home_timeline.json?" + urllib.urlencode({
                 "count": 100,
                 "base_app": 0,
                 "feature": 0,
                 "trim_user": 0,
             }), headers={"Authorization": "OAuth2 " + access_token})
-            if resp.status_code != 200:
-                logging.error("status_code %d, content: %s", resp.status_code, resp.content)
-                self.response.status_int = 500
-                self.response.write(resp.content)
-                return
-            body = json.loads(resp.content)
+            content = r.content
+            body = json.loads(content)
             if "error" in body:
-                logging.error("error: %s", resp.content)
+                logging.error("error: %s", content)
                 self.response.status_int = 500
                 self.response.write(body["error"])
                 return
-            memcache.set(sid, zlib.compress(json.dumps(resp.content), 9), time=120)
+            memcache.set(sid, zlib.compress(json.dumps(content), 9), time=120)
             results = body["statuses"]
-            for item in results:
-                logging.debug(json.dumps(item))
+            long_text_ids = []
+            long_text_map = dict()
+            for status in results:
+                if status["isLongText"]:
+                    long_text_ids.append(status["idstr"])
+            if len(long_text_ids) > 0:
+                ids = ",".join(long_text_ids)
+                r = urlfetch.fetch("https://api.weibo.com/2/statuses/show_batch.json?" + urllib.urlencode({
+                    "ids": ids,
+                    "isGetLongText": "1",
+                }), headers={"Authorization": "OAuth2 " + access_token})
+                body = json.loads(r.content)
+                if "error" in body:
+                    logging.warn("show_batch %s error: %s", ids, str(body["error"]))
+                elif "statuses" in body:
+                    for status in body["statuses"]:
+                        if "longText" in status:
+                            long_text_map[status["idstr"]] = status["longText"]["longTextContent"]
+            for status in results:
+                if status["isLongText"]:
+                    text = long_text_map.get(status["idstr"])
+                    if text is not None:
+                        logging.debug("replace long text for %s: %s", status["idstr"], text)
+                        status["text"] = text
+                        status["isLongText"] = False
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
