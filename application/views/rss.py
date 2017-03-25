@@ -5,6 +5,7 @@ import json
 import logging
 import re
 import urllib
+import urlparse
 import zlib
 from collections import defaultdict
 
@@ -15,6 +16,7 @@ from application import views
 from application.utils import crypto
 
 tcn_regex = re.compile(r"http[s]?://t\.cn/[a-zA-Z0-9$-_@.&#+!*(),%?]+")
+utm_queries = {"utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"}
 
 
 class RSS(views.BaseHandler):
@@ -144,8 +146,15 @@ class RSS(views.BaseHandler):
                     logging.warn("expand %s error: %s", str(rpc.chunk), result["error"])
                 elif "urls" in result:
                     for u in result["urls"]:
-                        if u["result"] and u["url_long"] != "":
-                            tcn_short2long[u["url_short"]] = u["url_long"]
+                        url_long = u["url_long"]
+                        if u["result"] and url_long != "":
+                            o = urlparse.urlparse(url_long, scheme="http", allow_fragments=True)
+                            qsl = filter(lambda x: x[0] not in utm_queries, urlparse.parse_qsl(o.query, True))
+                            o = urlparse.ParseResult(o.scheme, o.netloc, o.path, o.params, urllib.urlencode(qsl),
+                                                     o.fragment)
+                            url_long = urlparse.urlunparse(o)
+                            if url_long:
+                                tcn_short2long[u["url_short"]] = url_long
             logging.debug("tcn_short2long size=%d", len(tcn_short2long))
             if len(tcn_short2long) > 0:
                 memcache_client.set_multi(tcn_short2long, time=86400, key_prefix="tcn#")
