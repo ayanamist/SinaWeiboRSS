@@ -5,12 +5,13 @@ import email.utils
 import re
 import time
 
-from application.utils import crypto
+from application.utils import crypto, emotions
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
 url_regex = re.compile(ur"http[s]?://[a-zA-Z0-9$\-/_@.&#+!*(),%?]+")
 name_regex = re.compile(ur"@([A-Za-z0-9\-_\u4e00-\u9fff]{2,30})")
+emotion_regex = re.compile(ur"\[.+\]")
 
 
 def mid2url(mid):
@@ -41,12 +42,17 @@ def strftime(created_at):
 
 
 def expand_text(obj):
+    obj = unicode(obj)
     obj = obj.replace(u"\u200B", "").replace(u"\ufeff", "")
     obj = obj.rstrip()
     obj = obj.replace(" ", "&nbsp;")
     obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
     obj = url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
     obj = name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
+    for s in emotion_regex.findall(obj):
+        u = emotions.m.get(s)
+        if u is not None:
+            obj = obj.replace(s, r'<img render="ext" src="%s" title="%s" alt="%s" type="face">' % (u, s, s))
     return obj
 
 
