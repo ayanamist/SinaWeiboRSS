@@ -50,11 +50,11 @@ class RSS(views.BaseHandler):
             long_text_ids = []
             long_text_map = {}
             for status in results:
-                if status["isLongText"]:
+                if status.get("isLongText", True):
                     long_text_ids.append(status["idstr"])
                 status = status.get("retweeted_status")
                 if status is not None:
-                    if status["isLongText"]:
+                    if status.get("isLongText", True):
                         long_text_ids.append(status["idstr"])
             logging.debug("long_text_ids size=%d: %s", len(long_text_ids), long_text_ids)
             if len(long_text_ids) > 0:
@@ -84,10 +84,10 @@ class RSS(views.BaseHandler):
             logging.debug("long_text_map size=%d", len(long_text_map))
             if len(long_text_map) > 0:
                 def expand_long_text(status):
-                    if status["isLongText"]:
+                    if status.get("isLongText", True):
                         text = long_text_map.get(status["idstr"])
                         if text is not None:
-                            logging.debug("replace long text for %s: %s", status["idstr"], text)
+                            logging.debug("replace long text for %s", status["idstr"])
                             status["text"] = text
                             status["isLongText"] = False
 
