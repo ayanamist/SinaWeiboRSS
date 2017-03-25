@@ -6,6 +6,7 @@ import logging
 import re
 import urllib
 import zlib
+from collections import defaultdict
 
 from google.appengine.api import memcache
 from google.appengine.api import urlfetch
@@ -32,13 +33,12 @@ class RSS(views.BaseHandler):
                 return
 
             logging.debug("access_token: %s", access_token)
-            r = urlfetch.fetch("https://api.weibo.com/2/statuses/home_timeline.json?" + urllib.urlencode({
+            content = urlfetch.fetch("https://api.weibo.com/2/statuses/home_timeline.json?" + urllib.urlencode({
                 "count": 100,
                 "base_app": 0,
                 "feature": 0,
                 "trim_user": 0,
-            }), headers={"Authorization": "OAuth2 " + access_token})
-            content = r.content
+            }), headers={"Authorization": "OAuth2 " + access_token}).content
             body = json.loads(content)
             if "error" in body:
                 logging.error("error: %s", content)
@@ -52,47 +52,75 @@ class RSS(views.BaseHandler):
             for status in results:
                 if status["isLongText"]:
                     long_text_ids.append(status["idstr"])
+                status = status.get("retweeted_status")
+                if status is not None:
+                    if status["isLongText"]:
+                        long_text_ids.append(status["idstr"])
+            logging.debug("long_text_ids size=%d: %s", len(long_text_ids), long_text_ids)
             if len(long_text_ids) > 0:
-                ids = ",".join(long_text_ids)
-                try:
-                    r = urlfetch.fetch("https://api.weibo.com/2/statuses/show_batch.json?" + urllib.urlencode({
-                        "ids": ids,
-                        "isGetLongText": "1",
-                    }), headers={"Authorization": "OAuth2 " + access_token})
-                    body = json.loads(r.content)
-                except Exception as e:
-                    body = {"error": str(e)}
-                if "error" in body:
-                    logging.warn("show_batch %s error: %s", ids, str(body["error"]))
-                elif "statuses" in body:
-                    for status in body["statuses"]:
-                        if "longText" in status:
-                            long_text_map[status["idstr"]] = status["longText"]["longTextContent"]
+                rpcs = []
+                max_size = 50
+                for chunk in (long_text_ids[x:x + max_size] for x in xrange(0, len(long_text_ids), max_size)):
+                    ids = ",".join(chunk)
+                    rpc = urlfetch.create_rpc()
+                    urlfetch.make_fetch_call(rpc,
+                                             "https://api.weibo.com/2/statuses/show_batch.json?" + urllib.urlencode({
+                                                 "ids": ids,
+                                                 "isGetLongText": "1",
+                                             }), headers={"Authorization": "OAuth2 " + access_token})
+                    rpc.ids = ids
+                    rpcs.append(rpc)
+                for rpc in rpcs:
+                    try:
+                        body = json.loads(rpc.get_result().content)
+                    except Exception as e:
+                        body = {"error": str(e)}
+                    if "error" in body:
+                        logging.warn("show_batch %s error: %s", rpc.ids, str(body["error"]))
+                    elif "statuses" in body:
+                        for status in body["statuses"]:
+                            if "longText" in status:
+                                long_text_map[status["idstr"]] = status["longText"]["longTextContent"]
+            logging.debug("long_text_map size=%d", len(long_text_map))
             if len(long_text_map) > 0:
-                for status in results:
+                def expand_long_text(status):
                     if status["isLongText"]:
                         text = long_text_map.get(status["idstr"])
                         if text is not None:
                             logging.debug("replace long text for %s: %s", status["idstr"], text)
                             status["text"] = text
                             status["isLongText"] = False
+
+                for status in results:
+                    expand_long_text(status)
+                    status = status.get("retweeted_status")
+                    if status is not None:
+                        expand_long_text(status)
             # 将t.cn短链接展开
-            tcn_id2url = {}
+            tcn_id2url = defaultdict(set)
             all_tcn_urls = set()
-            for status in results:
+
+            def extract_tcn_urls(status):
                 tcn_urls = tcn_regex.findall(status["text"])
                 idstr = status["idstr"]
-                tcn_id2url[idstr] = tcn_urls
-                for u in tcn_urls:
-                    all_tcn_urls.add(u)
-            tcn_short2long = {}
+                tcn_id2url[idstr].update(tcn_urls)
+                all_tcn_urls.update(tcn_urls)
+
+            for status in results:
+                extract_tcn_urls(status)
+                status = status.get("retweeted_status")
+                if status is not None:
+                    extract_tcn_urls(status)
+            logging.debug("all_tcn_urls size=%d", len(all_tcn_urls))
             all_tcn_urls = list(all_tcn_urls)
+            tcn_short2long = {}
             memcache_client = memcache.Client()
             cached_result = memcache_client.get_multi(all_tcn_urls, "tcn#")
             tcn_short2long.update(cached_result)
             all_tcn_urls = filter(lambda x: x not in tcn_short2long, all_tcn_urls)
             rpcs = []
-            for chunk in (all_tcn_urls[x:x + 20] for x in xrange(0, len(all_tcn_urls), 20)):
+            max_size = 20
+            for chunk in (all_tcn_urls[x:x + max_size] for x in xrange(0, len(all_tcn_urls), max_size)):
                 rpc = urlfetch.create_rpc()
                 rpc.chunk = chunk
                 urlfetch.make_fetch_call(rpc, "https://api.weibo.com/2/short_url/expand.json?"
@@ -110,9 +138,11 @@ class RSS(views.BaseHandler):
                     for u in result["urls"]:
                         if u["result"] and u["url_long"] != "":
                             tcn_short2long[u["url_short"]] = u["url_long"]
+            logging.debug("tcn_short2long size=%d", len(tcn_short2long))
             if len(tcn_short2long) > 0:
                 memcache_client.set_multi(tcn_short2long, 86400, "tcn#")
-                for status in results:
+
+                def expand_url(status):
                     idstr = status["idstr"]
                     tcn_urls = tcn_id2url[idstr]
                     if len(tcn_urls) > 0:
@@ -122,9 +152,22 @@ class RSS(views.BaseHandler):
                             if long_url is not None:
                                 text = text.replace(short_url, long_url)
                         status["text"] = text
+
+                for status in results:
+                    expand_url(status)
+                    status = status.get("retweeted_status")
+                    if status is not None:
+                        expand_url(status)
+
             # 在jinja模板里做escape会把后面的filter也escape了，所以只好在这里自己做一下
-            for status in results:
+            def escape(status):
                 status["text"] = status["text"].replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;')
+
+            for status in results:
+                escape(status)
+                status = status.get("retweeted_status")
+                if status is not None:
+                    escape(status)
             # 将结果缓存
             memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         else:
