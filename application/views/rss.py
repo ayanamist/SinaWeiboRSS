@@ -161,7 +161,7 @@ class RSS(views.BaseHandler):
 
             # 在jinja模板里做escape会把后面的filter也escape了，所以只好在这里自己做一下
             def escape(status):
-                status["text"] = status["text"].replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;')
+                status["text"] = status["text"].replace('>', '&gt;').replace('<', '&lt;')
 
             for status in results:
                 escape(status)
