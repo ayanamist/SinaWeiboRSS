@@ -41,6 +41,8 @@ def strftime(created_at):
 
 
 def expand_text(obj):
+    obj = obj.replace(u"\u200B", "").replace(u"\ufeff", "")
+    obj = obj.rstrip()
     obj = obj.replace(" ", "&nbsp;")
     obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
     obj = url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
