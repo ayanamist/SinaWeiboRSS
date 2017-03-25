@@ -45,14 +45,14 @@ def expand_text(obj):
     obj = unicode(obj)
     obj = obj.replace(u"\u200B", "").replace(u"\ufeff", "")
     obj = obj.rstrip()
-    obj = obj.replace(" ", "&nbsp;")
-    obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
+    obj = obj.replace('>', '&gt;').replace('<', '&lt;')
     obj = url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
     obj = name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
     for s in emotion_regex.findall(obj):
         u = emotions.m.get(s)
         if u is not None:
             obj = obj.replace(s, r'<img render="ext" src="%s" title="%s" alt="%s" type="face">' % (u, s, s))
+    obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
     return obj
 
 

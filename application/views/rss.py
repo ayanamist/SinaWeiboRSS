@@ -176,15 +176,6 @@ class RSS(views.BaseHandler):
                     if status is not None:
                         expand_url(status)
 
-            # 在jinja模板里做escape会把后面的filter也escape了，所以只好在这里自己做一下
-            def escape(status):
-                status["text"] = status["text"].replace('>', '&gt;').replace('<', '&lt;')
-
-            for status in results:
-                escape(status)
-                status = status.get("retweeted_status")
-                if status is not None:
-                    escape(status)
             # 将结果缓存
             memcache_client.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         else:
