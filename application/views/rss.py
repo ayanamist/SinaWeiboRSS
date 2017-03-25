@@ -19,7 +19,8 @@ tcn_regex = re.compile(r"http[s]?://t\.cn/[a-zA-Z0-9$-_@.&#+!*(),%?]+")
 
 class RSS(views.BaseHandler):
     def get(self, sid):
-        results = memcache.get(sid)
+        memcache_client = memcache.Client()
+        results = memcache_client.get(sid)
         if results:
             try:
                 results = json.loads(zlib.decompress(results))
@@ -56,7 +57,12 @@ class RSS(views.BaseHandler):
                 if status is not None:
                     if status.get("isLongText", True):
                         long_text_ids.append(status["idstr"])
-            logging.debug("long_text_ids size=%d: %s", len(long_text_ids), long_text_ids)
+            logging.debug("long_text_ids before cache size=%d", len(long_text_ids))
+            if len(long_text_ids):
+                cached_result = memcache_client.get_multi(long_text_ids, "long#")
+                long_text_map.update(cached_result)
+                long_text_ids = filter(lambda x: x not in long_text_map, long_text_ids)
+            logging.debug("long_text_ids after cache size=%d", len(long_text_ids))
             if len(long_text_ids) > 0:
                 rpcs = []
                 max_size = 50
@@ -83,6 +89,8 @@ class RSS(views.BaseHandler):
                                 long_text_map[status["idstr"]] = status["longText"]["longTextContent"]
             logging.debug("long_text_map size=%d", len(long_text_map))
             if len(long_text_map) > 0:
+                memcache_client.set_multi(long_text_map, time=86400, key_prefix="long#")
+
                 def expand_long_text(status):
                     if status.get("isLongText", True):
                         text = long_text_map.get(status["idstr"])
@@ -111,13 +119,13 @@ class RSS(views.BaseHandler):
                 status = status.get("retweeted_status")
                 if status is not None:
                     extract_tcn_urls(status)
-            logging.debug("all_tcn_urls size=%d", len(all_tcn_urls))
+            logging.debug("all_tcn_urls before cache size=%d", len(all_tcn_urls))
             all_tcn_urls = list(all_tcn_urls)
             tcn_short2long = {}
-            memcache_client = memcache.Client()
             cached_result = memcache_client.get_multi(all_tcn_urls, "tcn#")
             tcn_short2long.update(cached_result)
             all_tcn_urls = filter(lambda x: x not in tcn_short2long, all_tcn_urls)
+            logging.debug("all_tcn_urls after cache size=%d", len(all_tcn_urls))
             rpcs = []
             max_size = 20
             for chunk in (all_tcn_urls[x:x + max_size] for x in xrange(0, len(all_tcn_urls), max_size)):
@@ -140,7 +148,7 @@ class RSS(views.BaseHandler):
                             tcn_short2long[u["url_short"]] = u["url_long"]
             logging.debug("tcn_short2long size=%d", len(tcn_short2long))
             if len(tcn_short2long) > 0:
-                memcache_client.set_multi(tcn_short2long, 86400, "tcn#")
+                memcache_client.set_multi(tcn_short2long, time=86400, key_prefix="tcn#")
 
                 def expand_url(status):
                     idstr = status["idstr"]
@@ -169,7 +177,7 @@ class RSS(views.BaseHandler):
                 if status is not None:
                     escape(status)
             # 将结果缓存
-            memcache.set(sid, zlib.compress(json.dumps(results), 9), time=120)
+            memcache_client.set(sid, zlib.compress(json.dumps(results), 9), time=120)
         else:
             logging.debug("sid %s from cache", sid)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
