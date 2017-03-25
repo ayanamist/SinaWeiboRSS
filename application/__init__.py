@@ -11,10 +11,6 @@ try:
 except ImportError:
     pass
 
-from application.utils import monkey_patch
-
-monkey_patch.patch_all()
-
 config = dict((name, os.environ[name]) for name in (
     "CONSUMER_KEY",
     "CONSUMER_SECRET",
