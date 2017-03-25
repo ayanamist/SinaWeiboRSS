@@ -33,7 +33,7 @@
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
                         <br />
                         {% endif %}
-                        {{ result.retweeted_status.text|safe|expandurl|expandname }}
+                        {{ result.retweeted_status.text|expandurl|expandname|safe }}
                     </div>
                     {% for pic_url in result.retweeted_status.pic_urls %}
                     <div>
