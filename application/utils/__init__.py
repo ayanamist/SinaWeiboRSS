@@ -9,7 +9,7 @@ from application.utils import crypto
 
 base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
-url_regex = re.compile(ur"http[s]?://[a-zA-Z0-9$-_@.&#+!*(),%?]+")
+url_regex = re.compile(ur"http[s]?://[a-zA-Z0-9$\-/_@.&#+!*(),%?]+")
 name_regex = re.compile(ur"@([A-Za-z0-9\-_\u4e00-\u9fff]{2,30})")
 
 
