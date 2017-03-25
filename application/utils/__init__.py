@@ -11,7 +11,7 @@ base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 base62_len = 62
 url_regex = re.compile(ur"http[s]?://[a-zA-Z0-9$-_@.&#+!*(),%?]+")
 name_regex = re.compile(ur"@([A-Za-z0-9\-_\u4e00-\u9fff]{2,30})")
-emotion_regex = re.compile(ur"\[.+\]")
+emotion_regex = re.compile(ur"\[[^\]]+\]")
 
 
 def mid2url(mid):
@@ -51,7 +51,8 @@ def expand_text(obj):
     for s in emotion_regex.findall(obj):
         u = emotions.m.get(s)
         if u is not None:
-            obj = obj.replace(s, r' <img render="ext" src="%s" title="%s" alt="%s" type="face"> ' % (u, s, s))
+            s2 = s.replace("[", "&#91;").replace("]", "&#93;")
+            obj = obj.replace(s, r' <img render="ext" src="%s" title="%s" alt="%s" type="face"> ' % (u, s2, s2))
     obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", " <br> ")
     return obj
 

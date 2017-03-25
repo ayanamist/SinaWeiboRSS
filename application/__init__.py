@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-config = dict((name, os.environ[name]) for name in (
+config = dict((name, os.environ.get(name)) for name in (
     "CONSUMER_KEY",
     "CONSUMER_SECRET",
     "CONSUMER_DOMAIN",
