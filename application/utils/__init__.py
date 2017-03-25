@@ -40,12 +40,12 @@ def strftime(created_at):
     return time.strftime(date_fmt, t)
 
 
-def expandurl(obj):
-    return url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
-
-
-def expandname(obj):
-    return name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
+def expand_text(obj):
+    obj = obj.replace(" ", "&nbsp;")
+    obj = obj.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
+    obj = url_regex.sub(r'<a href="\g<0>">\g<0></a>', obj)
+    obj = name_regex.sub(r'<a href="http://weibo.com/n/\g<1>">@\g<1></a>', obj)
+    return obj
 
 
 _regex = re.compile(r"(http(?:s)?://(\w+)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]+)", re.I)
