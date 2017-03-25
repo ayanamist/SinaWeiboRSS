@@ -20,6 +20,7 @@
                 ]]></title>
                 <description><![CDATA[
                 <div>
+                    <!-- id: {{ result.idstr }} -->
                     <a href="http://weibo.com/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
                     {%- if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
@@ -28,6 +29,7 @@
                 {% if result.retweeted_status %}
                 <blockquote>
                     <div>
+                        <!-- id: {{ result.retweeted_status.idstr }} -->
                         {% if result.retweeted_status.user %}
                         <a href="http://weibo.com/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
