@@ -4,7 +4,7 @@
         <atom:link rel="hub" href="http://pubsubhubbub.appspot.com"/>
         <title>新浪微博首页时间线</title>
         <description>导出新浪微博首页时间线为RSS</description>
-        <link>http://weibo.com/</link>
+        <link>https://weibo.com/</link>
         {% for result in results %}
             {%- if result.retweeted_status and not result.retweeted_status.user %}
                 {% continue %}
@@ -21,7 +21,7 @@
                 <description><![CDATA[
                 <div>
                     <!-- id: {{ result.idstr }} -->
-                    <a href="http://weibo.com/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
+                    <a href="https://weibo.com/n/{{ result.user.screen_name|utf8|quote }}">@{{ result.user.screen_name }}
                     {%- if result.user.screen_name != result.user.name %}({{ result.user.name }}){% endif %}</a>：
                     <br />
                     {{ result.text|expand_text|safe }}
@@ -31,7 +31,7 @@
                     <div>
                         <!-- id: {{ result.retweeted_status.idstr }} -->
                         {% if result.retweeted_status.user %}
-                        <a href="http://weibo.com/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
+                        <a href="https://weibo.com/n/{{ result.retweeted_status.user.screen_name|utf8|quote }}">@{{ result.retweeted_status.user.screen_name }}
                         {% if result.retweeted_status.user.screen_name != result.retweeted_status.user.name %}({{ result.retweeted_status.user.name }}){% endif %}</a>：
                         <br />
                         {% endif %}
@@ -49,7 +49,7 @@
                     {%- endif %}
                     {% if result.retweeted_status.user %}
                     <div>
-                        <a href="http://weibo.com/{{ result.retweeted_status.user.id }}/{{ result.retweeted_status.mid|mid2url }}">
+                        <a href="https://weibo.com/{{ result.retweeted_status.user.id }}/{{ result.retweeted_status.mid|mid2url }}">
                         {{ result.retweeted_status.created_at|strftime }}
                         </a>
                         来自 {{ result.retweeted_status.source|safe }}
@@ -68,14 +68,14 @@
                 <div>共有{{ result.pic_urls|length }} 张图片</div>
                 {%- endif %}
                 <div>
-                    <a href="http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}">
+                    <a href="https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}">
                     {{ result.created_at|strftime }}
                     </a>
                     来自 {{ result.source|safe }}
                 </div>
             ]]></description>
-                <link>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
-                <guid>http://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</guid>
+                <link>https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
+                <guid>https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</guid>
                 <pubDate>{{ result.created_at|rfc822 }}</pubDate>
             </item>
         {% endfor %}

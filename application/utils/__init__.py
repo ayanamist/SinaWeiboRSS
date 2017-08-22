@@ -47,7 +47,7 @@ def expand_text(obj):
     obj = obj.rstrip()
     obj = obj.replace('>', '&gt;').replace('<', '&lt;')
     obj = url_regex.sub(r' <a href="\g<0>">\g<0></a> ', obj)
-    obj = name_regex.sub(r' <a href="http://weibo.com/n/\g<1>">@\g<1></a> ', obj)
+    obj = name_regex.sub(r' <a href="https://weibo.com/n/\g<1>">@\g<1></a> ', obj)
     for s in emotion_regex.findall(obj):
         u = emotions.m.get(s)
         if u is not None:
