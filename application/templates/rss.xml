@@ -12,10 +12,16 @@
             <item>
                 <title><![CDATA[
                     @{{ result.user.screen_name }}：{{ result.text|safe }}
+                    {% if result.pic_urls|length %}
+                    [共有{{ result.pic_urls|length }} 张图片]
+                    {%- endif %}
                     {%- if result.retweeted_status %}
                         ▕▏
                         {% if result.retweeted_status.user %}@{{ result.retweeted_status.user.screen_name }}：{% endif -%}
                         {{ result.retweeted_status.text }}
+                        {% if result.retweeted_status.pic_urls|length %}
+                        [共有{{ result.retweeted_status.pic_urls|length }} 张图片]
+                        {%- endif %}
                     {% endif %}
                 ]]></title>
                 <description><![CDATA[
