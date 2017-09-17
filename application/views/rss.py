@@ -150,7 +150,8 @@ class RSS(views.BaseHandler):
                         if u["result"] and url_long != "":
                             o = urlparse.urlparse(url_long, scheme="http", allow_fragments=True)
                             qsl = filter(lambda x: x[0] not in utm_queries, urlparse.parse_qsl(o.query, True))
-                            o = urlparse.ParseResult(o.scheme, o.netloc, o.path, o.params, urllib.urlencode(qsl),
+                            o = urlparse.ParseResult(o.scheme, o.netloc, o.path, o.params,
+                                                     urllib.urlencode(encode_obj(qsl)),
                                                      o.fragment)
                             url_long = urlparse.urlunparse(o)
                             if url_long:
@@ -182,3 +183,29 @@ class RSS(views.BaseHandler):
             logging.debug("sid %s from cache", sid)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
         self.render_response("rss.xml", results=results)
+
+
+def encode_obj(in_obj):
+
+    def encode_list(in_list):
+        out_list = []
+        for el in in_list:
+            out_list.append(encode_obj(el))
+        return out_list
+
+    def encode_dict(in_dict):
+        out_dict = {}
+        for k, v in in_dict.iteritems():
+            out_dict[k] = encode_obj(v)
+        return out_dict
+
+    if isinstance(in_obj, unicode):
+        return in_obj.encode('utf-8')
+    elif isinstance(in_obj, list):
+        return encode_list(in_obj)
+    elif isinstance(in_obj, tuple):
+        return tuple(encode_list(in_obj))
+    elif isinstance(in_obj, dict):
+        return encode_dict(in_obj)
+
+    return in_obj
