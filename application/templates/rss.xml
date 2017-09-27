@@ -59,6 +59,7 @@
                         {{ result.retweeted_status.created_at|strftime }}
                         </a>
                         来自 {{ result.retweeted_status.source|safe }}
+                        <a href="sinaweibo://detail?mblogid={{ result.retweeted_status.mid|mid2url }}">APP</a>
                     </div>
                     {% endif %}
                 </blockquote>
@@ -78,6 +79,7 @@
                     {{ result.created_at|strftime }}
                     </a>
                     来自 {{ result.source|safe }}
+                    <a href="sinaweibo://detail?mblogid={{ result.mid|mid2url }}">APP</a>
                 </div>
             ]]></description>
                 <link>https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>
