@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+import functools
 import json
 import logging
 import re
@@ -182,11 +183,11 @@ class RSS(views.BaseHandler):
         else:
             logging.debug("sid %s from cache", sid)
         self.response.headers["Content-Type"] = "application/rss+xml; charset=utf-8"
-        self.render_response("rss.xml", results=results)
+        self.render_response("rss.xml", results=results,
+                             abs_uri_for=functools.partial(self.uri_for, _full=True, _scheme="https"))
 
 
 def encode_obj(in_obj):
-
     def encode_list(in_list):
         out_list = []
         for el in in_list:

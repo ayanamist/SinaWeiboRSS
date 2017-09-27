@@ -55,11 +55,10 @@
                     {%- endif %}
                     {% if result.retweeted_status.user %}
                     <div>
-                        <a href="https://weibo.com/{{ result.retweeted_status.user.id }}/{{ result.retweeted_status.mid|mid2url }}">
+                        <a href="{{ abs_uri_for("detail", uid=result.retweeted_status.user.id, mid=result.retweeted_status.mid) }}">
                         {{ result.retweeted_status.created_at|strftime }}
                         </a>
                         来自 {{ result.retweeted_status.source|safe }}
-                        <a href="sinaweibo://detail?mblogid={{ result.retweeted_status.mid|mid2url }}">APP</a>
                     </div>
                     {% endif %}
                 </blockquote>
@@ -75,11 +74,10 @@
                 <div>共有{{ result.pic_urls|length }} 张图片</div>
                 {%- endif %}
                 <div>
-                    <a href="https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}">
+                    <a href="{{ abs_uri_for("detail", uid=result.user.id, mid=result.mid) }}">
                     {{ result.created_at|strftime }}
                     </a>
                     来自 {{ result.source|safe }}
-                    <a href="sinaweibo://detail?mblogid={{ result.mid|mid2url }}">APP</a>
                 </div>
             ]]></description>
                 <link>https://weibo.com/{{ result.user.id }}/{{ result.mid|mid2url }}</link>

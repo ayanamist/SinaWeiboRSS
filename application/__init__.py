@@ -21,4 +21,6 @@ config = dict((name, os.environ.get(name)) for name in (
 app = webapp2.WSGIApplication([
     webapp2.Route("/", handler="application.views.login.Login", name="login"),
     webapp2.Route("/rss/<sid>", handler="application.views.rss.RSS", name="rss"),
+    webapp2.Route("/detail/<uid>/<mid>", handler="application.views.jump.Detail", name="detail"),
+    webapp2.Route("/user/<uid>", handler="application.views.jump.UserProfile", name="user"),
 ], config=config, debug=True)

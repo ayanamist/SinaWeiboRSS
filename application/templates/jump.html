@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>跳转</title>
+    <script>
+        var webUrl = "{{ web_url }}";
+        var appUrl = "{{ app_url }}";
+        window.addEventListener("DOMContentLoaded", function () {
+            if (navigator.userAgent.indexOf(" Mobile ") < 0) {
+                location.href = webUrl;
+            } else {
+                var timeout = false;
+                ["pagehide", "blur", "beforeunload"].forEach(function (t) {
+                    window.addEventListener(t, function () {
+                        if (!timeout) {
+                            window.close();
+                        }
+                    }, false);
+                });
+                setTimeout(function () {
+                    timeout = true;
+                    location.href = webUrl;
+                }, 1500);
+                location.href = appUrl;
+            }
+        }, false);
+    </script>
+</head>
+<body>
+跳转中
+</body>
+</html>
