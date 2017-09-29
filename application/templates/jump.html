@@ -7,7 +7,7 @@
         var webUrl = "{{ web_url }}";
         var appUrl = "{{ app_url }}";
         window.addEventListener("DOMContentLoaded", function () {
-            if (navigator.userAgent.indexOf(" Mobile ") < 0) {
+            if (navigator.userAgent.indexOf("Mobile") < 0) {
                 location.href = webUrl;
             } else {
                 var timeout = false;

@@ -7,7 +7,7 @@ from application.utils import mid2url
 
 class JumpHandler(views.BaseHandler):
     def get(self, app_url, web_url):
-        if " Mobile " not in self.request.user_agent:
+        if "Mobile" not in self.request.user_agent:
             self.redirect(web_url)
         else:
             self.render_response("jump.html", app_url=app_url, web_url=web_url)
