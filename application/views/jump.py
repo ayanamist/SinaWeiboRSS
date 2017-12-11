@@ -15,8 +15,8 @@ class JumpHandler(views.BaseHandler):
 
 class Detail(JumpHandler):
     def get(self, uid, mid):
+        app_url = "sinaweibo://detail?mblogid=" + mid
         web_url = "https://weibo.com/%s/%s" % (uid, mid2url(mid))
-        app_url = "weibointernational://detail?weiboid=" + mid
         super(Detail, self).get(app_url, web_url)
 
 
