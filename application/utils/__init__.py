@@ -55,8 +55,20 @@ _regex = re.compile(r"(http(?:s)?://(\w+)\.sinaimg\.cn/([a-z]+)/[a-z0-9]+\.[a-z]
 
 
 def original_pic(url):
+    if url.startswith("http://"):
+        url = "https://" + url[len("http://"):]
     matched = _regex.match(url)
     if matched:
         return url[:matched.start(3)] + "large" + url[matched.end(3):]
+    else:
+        return url
+
+
+def preview_pic(url):
+    if url.startswith("http://"):
+        url = "https://" + url[len("http://"):]
+    matched = _regex.match(url)
+    if matched:
+        return url[:matched.start(3)] + "bmiddle" + url[matched.end(3):]
     else:
         return url

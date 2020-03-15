@@ -29,6 +29,7 @@ class BaseHandler(webapp2.RequestHandler):
             "quote": urllib.quote,
             "utf8": lambda x: x.encode("utf8"),
             "original_pic": utils.original_pic,
+            "preview_pic": utils.preview_pic,
         }
         default_config["template_path"] = path.normpath(path.join(path.dirname(__file__), "../templates"))
         return jinja2.get_jinja2(app=self.app)

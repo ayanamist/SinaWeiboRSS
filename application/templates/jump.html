@@ -2,10 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <title>跳转</title>
     <script>
         var webUrl = "{{ web_url }}";
-        var appUrl = "{{ app_url }}";
+        var defaultAppUrl = "{{ international_app_url }}";
         window.addEventListener("DOMContentLoaded", function () {
             if (navigator.userAgent.indexOf("Mobile") < 0) {
                 location.href = webUrl;
@@ -20,14 +21,29 @@
                 });
                 setTimeout(function () {
                     timeout = true;
-                    location.href = webUrl;
                 }, 1500);
-                location.href = appUrl;
+                location.href = defaultAppUrl;
             }
         }, false);
     </script>
+    <style>
+        .btn {
+            margin: 16px;
+            font-size: 2em;
+        }
+    </style>
 </head>
 <body>
-跳转中
+<div>
+    <div class="btn">
+        <a href="{{ international_app_url }}">用国际版app打开</a>
+    </div>
+    <div class="btn">
+        <a href="{{ app_url }}">用普通版app打开</a>
+    </div>
+    <div class="btn">
+        <a href="{{ web_url }}">用H5页面打开</a>
+    </div>
+</div>
 </body>
 </html>

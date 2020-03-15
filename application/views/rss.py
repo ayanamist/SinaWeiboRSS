@@ -42,6 +42,7 @@ class RSS(views.BaseHandler):
                 "base_app": 0,
                 "feature": 0,
                 "trim_user": 0,
+                "isGetLongText": "1",
             }), headers={"Authorization": "OAuth2 " + access_token}).content
             body = json.loads(content)
             if "error" in body:
@@ -66,6 +67,7 @@ class RSS(views.BaseHandler):
                 long_text_map.update(cached_result)
                 long_text_ids = filter(lambda x: x not in long_text_map, long_text_ids)
             logging.debug("long_text_ids after cache size=%d", len(long_text_ids))
+            long_text_ids = sorted(list(set(long_text_ids)))
             if len(long_text_ids) > 0:
                 rpcs = []
                 max_size = 50
